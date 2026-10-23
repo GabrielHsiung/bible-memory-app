@@ -1,0 +1,789 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>藏經於心｜聖經背誦練習</title>
+
+  <style>
+    :root {
+      --green: #315b46;
+      --green-dark: #244534;
+      --green-light: #e8eee8;
+      --cream: #f7f5ef;
+      --white: #ffffff;
+      --text: #263b32;
+      --muted: #758477;
+      --border: #dce3dc;
+      --success: #287348;
+      --error: #b23b3b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 16px 48px;
+      background: var(--cream);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont,
+        "PingFang TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.7;
+    }
+
+    button,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      background: var(--green);
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    button:hover {
+      background: var(--green-dark);
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #9bbba3;
+      outline-offset: 2px;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .secondary:hover {
+      background: #d8e4d9;
+    }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 28px;
+    }
+
+    .brand {
+      color: var(--green);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin: 8px 0;
+      font-size: clamp(30px, 6vw, 42px);
+      line-height: 1.3;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 21px;
+    }
+
+    p {
+      margin-top: 8px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin-bottom: 0;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1px solid #eceee8;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 5px 18px #263b3208;
+    }
+
+    .card-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .reference {
+      color: var(--green);
+      font-size: 21px;
+      font-weight: 700;
+      margin: 8px 0;
+    }
+
+    .verse {
+      min-height: 95px;
+      margin: 20px 0;
+      font-size: clamp(19px, 4vw, 23px);
+      line-height: 1.95;
+      white-space: pre-wrap;
+    }
+
+    .verse-hidden {
+      color: #8c988d;
+      letter-spacing: 5px;
+    }
+
+    .topic {
+      display: inline-block;
+      padding: 4px 11px;
+      background: var(--green-light);
+      color: var(--green);
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e9eee8;
+      margin: 12px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--green);
+      border-radius: inherit;
+      transition: width 0.3s;
+    }
+
+    .progress-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 14px 0 6px;
+    }
+
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    textarea::placeholder {
+      color: #a0aaa1;
+    }
+
+    .feedback {
+      margin-bottom: 0;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    .feedback.success {
+      color: var(--success);
+    }
+
+    .feedback.error {
+      color: var(--error);
+    }
+
+    .reflection-question {
+      padding: 14px;
+      background: #f5f7f2;
+      border-radius: 12px;
+      margin: 12px 0;
+    }
+
+    .history-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #edf0eb;
+      overflow-wrap: anywhere;
+    }
+
+    .history-item:last-child {
+      border-bottom: 0;
+    }
+
+    .history-date {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .history-text {
+      white-space: pre-wrap;
+      margin: 5px 0;
+    }
+
+    .small-button {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 22px 12px 36px;
+      }
+
+      .card {
+        padding: 19px;
+        border-radius: 15px;
+      }
+
+      .button-row button {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <header>
+      <div class="brand">BIBLE MEMORY</div>
+      <h1>藏經於心 📖</h1>
+      <p class="subtitle">
+        把神的話藏在心裡，讓真理進入生活。
+      </p>
+    </header>
+
+    <section class="card">
+      <div class="card-heading">
+        <div class="label">每日靈修 · 經文背誦</div>
+        <div class="label" id="verseCount">第 1 節</div>
+      </div>
+
+      <div class="topic" id="verseTopic">禱告</div>
+      <div class="reference" id="verseRef">腓立比書 4:6</div>
+
+      <p class="verse" id="verse"></p>
+
+      <div class="button-row">
+        <button id="toggleButton" type="button">
+          隱藏經文，試著背誦
+        </button>
+        <button class="secondary" id="nextButton" type="button">
+          下一節經文 →
+        </button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-heading">
+        <h2>📈 我的背誦進度</h2>
+      </div>
+
+      <div class="progress-caption">
+        <span>已完成默寫的經文</span>
+        <span id="progressText">0 / 3 節</span>
+      </div>
+
+      <div
+        class="progress-track"
+        role="progressbar"
+        aria-label="背誦進度"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+        id="progressBar"
+      >
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <p class="subtitle" id="progressMessage">
+        每天練習一點點，讓神的話更深刻在心中。
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>✍️ 默寫挑戰</h2>
+      <p class="subtitle">
+        不看上面的經文，試著輸入完整內容。
+      </p>
+
+      <label class="field-label" for="answer">
+        你的默寫答案
+      </label>
+      <textarea
+        id="answer"
+        placeholder="在這裡輸入你記得的經文……"
+      ></textarea>
+
+      <div class="button-row">
+        <button id="checkButton" type="button">檢查答案</button>
+        <button class="secondary" id="showAnswerButton" type="button">
+          顯示答案
+        </button>
+      </div>
+
+      <p class="feedback" id="result" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <h2>💡 默想與禱告</h2>
+      <p class="subtitle">
+        不只是記住經文，也試著讓經文進入今天的生活。
+      </p>
+
+      <div class="reflection-question" id="reflectionQuestion">
+        我現在正在為什麼事情憂慮？我可以如何把它帶到神面前禱告？
+      </div>
+
+      <label class="field-label" for="prayer">
+        我的默想或禱告
+      </label>
+      <textarea
+        id="prayer"
+        placeholder="寫下今天的默想、感恩或禱告……"
+      ></textarea>
+
+      <div class="button-row">
+        <button id="savePrayerButton" type="button">儲存默想</button>
+      </div>
+
+      <p class="feedback" id="prayerResult" aria-live="polite"></p>
+    </section>
+
+    <section class="card">
+      <div class="card-heading">
+        <h2>📝 我的默想紀錄</h2>
+        <button
+          class="secondary small-button"
+          id="clearHistoryButton"
+          type="button"
+        >
+          清除全部
+        </button>
+      </div>
+
+      <div id="history">
+        <p class="empty-state">目前還沒有儲存的默想紀錄。</p>
+      </div>
+    </section>
+
+    <footer>
+      藏經於心 · 每天一點點，讓神的話成為生活的指引。
+      <br>
+      此版本的學習資料儲存在目前瀏覽器的本機空間。
+    </footer>
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. 經文資料
+    // 正式使用前，請核對所選聖經譯本的完整經文及授權。
+    // ==========================================
+
+    const verses = [
+      {
+        ref: "腓立比書 4:6",
+        text: "應當一無掛慮，只要凡事藉著禱告、祈求，和感謝，將你們所要的告訴神。",
+        topic: "禱告",
+        question: "我現在正在為什麼事情憂慮？我可以如何把它帶到神面前禱告？"
+      },
+      {
+        ref: "約翰福音 14:6",
+        text: "耶穌說：「我就是道路、真理、生命。」",
+        topic: "信心",
+        question: "今天我在哪件事上，需要再次思想耶穌是道路、真理、生命？"
+      },
+      {
+        ref: "約翰一書 4:19",
+        text: "我們愛，因為神先愛我們。",
+        topic: "愛",
+        question: "今天我可以如何回應神先向我顯明的愛？"
+      }
+    ];
+
+    // ==========================================
+    // 2. 應用程式狀態
+    // ==========================================
+
+    let currentIndex = 0;
+    let isHidden = false;
+
+    const STORAGE_KEY = "bible-memory-app-v1";
+
+    function getInitialState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (saved) {
+          const parsed = JSON.parse(saved);
+
+          return {
+            completed: Array.isArray(parsed.completed)
+              ? parsed.completed
+              : [],
+            prayers: Array.isArray(parsed.prayers)
+              ? parsed.prayers
+              : []
+          };
+        }
+      } catch (error) {
+        console.warn("無法讀取學習紀錄：", error);
+      }
+
+      return {
+        completed: [],
+        prayers: []
+      };
+    }
+
+    let appState = getInitialState();
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        return true;
+      } catch (error) {
+        console.error("無法儲存學習紀錄：", error);
+        return false;
+      }
+    }
+
+    // ==========================================
+    // 3. 顯示目前經文
+    // ==========================================
+
+    function renderVerse() {
+      const verse = verses[currentIndex];
+
+      document.getElementById("verseRef").textContent = verse.ref;
+      document.getElementById("verseTopic").textContent = verse.topic;
+      document.getElementById("verseCount").textContent =
+        `第 ${currentIndex + 1} / ${verses.length} 節`;
+
+      document.getElementById("reflectionQuestion").textContent =
+        verse.question;
+
+      document.getElementById("verse").textContent =
+        isHidden ? "＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊" : verse.text;
+
+      document.getElementById("verse").classList.toggle(
+        "verse-hidden",
+        isHidden
+      );
+
+      document.getElementById("toggleButton").textContent =
+        isHidden ? "顯示經文" : "隱藏經文，試著背誦";
+
+      document.getElementById("answer").value = "";
+      document.getElementById("result").textContent = "";
+      document.getElementById("result").className = "feedback";
+    }
+
+    function toggleVerse() {
+      isHidden = !isHidden;
+      renderVerse();
+    }
+
+    function nextVerse() {
+      currentIndex = (currentIndex + 1) % verses.length;
+      isHidden = false;
+      renderVerse();
+      loadPrayerForCurrentVerse();
+    }
+
+    function previousVerse() {
+      currentIndex =
+        (currentIndex - 1 + verses.length) % verses.length;
+      isHidden = false;
+      renderVerse();
+      loadPrayerForCurrentVerse();
+    }
+
+    // ==========================================
+    // 4. 默寫測驗
+    // ==========================================
+
+    function normalize(text) {
+      return text
+        .normalize("NFC")
+        .replace(/[\s，。、「」『』！？；：,.!?;:"'（）()【】\[\]《》〈〉—\-]/g, "")
+        .toLowerCase();
+    }
+
+    function checkAnswer() {
+      const answer = document.getElementById("answer").value.trim();
+      const result = document.getElementById("result");
+      const verse = verses[currentIndex];
+
+      if (!answer) {
+        result.textContent = "請先輸入你記得的經文，再檢查答案。";
+        result.className = "feedback error";
+        return;
+      }
+
+      if (normalize(answer) === normalize(verse.text)) {
+        result.textContent = "答對了！🎉 你已完成這節經文的默寫練習。";
+        result.className = "feedback success";
+
+        if (!appState.completed.includes(verse.ref)) {
+          appState.completed.push(verse.ref);
+          saveState();
+          renderProgress();
+        }
+      } else {
+        result.textContent =
+          "還有一點差距，再試一次！標點差異不影響結果，可以再核對文字。";
+        result.className = "feedback error";
+      }
+    }
+
+    function showAnswer() {
+      const result = document.getElementById("result");
+      result.textContent =
+        "參考答案：\n" + verses[currentIndex].text;
+      result.className = "feedback";
+    }
+
+    // ==========================================
+    // 5. 背誦進度
+    // ==========================================
+
+    function renderProgress() {
+      const completedCount = verses.filter(verse =>
+        appState.completed.includes(verse.ref)
+      ).length;
+
+      const percentage = Math.round(
+        (completedCount / verses.length) * 100
+      );
+
+      document.getElementById("progressText").textContent =
+        `${completedCount} / ${verses.length} 節`;
+
+      document.getElementById("progressFill").style.width =
+        `${percentage}%`;
+
+      document.getElementById("progressBar").setAttribute(
+        "aria-valuenow",
+        String(percentage)
+      );
+
+      document.getElementById("progressMessage").textContent =
+        completedCount === verses.length
+          ? "太好了！你已完成目前所有經文的默寫挑戰。"
+          : `已完成 ${percentage}% 的默寫挑戰，繼續加油！`;
+    }
+
+    // ==========================================
+    // 6. 默想與禱告紀錄
+    // ==========================================
+
+    function getPrayerForCurrentVerse() {
+      return appState.prayers.find(
+        item => item.ref === verses[currentIndex].ref
+      );
+    }
+
+    function loadPrayerForCurrentVerse() {
+      const saved = getPrayerForCurrentVerse();
+
+      document.getElementById("prayer").value =
+        saved ? saved.text : "";
+
+      document.getElementById("prayerResult").textContent = "";
+    }
+
+    function savePrayer() {
+      const text = document.getElementById("prayer").value.trim();
+      const result = document.getElementById("prayerResult");
+      const verse = verses[currentIndex];
+
+      if (!text) {
+        result.textContent = "請先寫下一點默想，再儲存。";
+        result.className = "feedback error";
+        return;
+      }
+
+      const now = new Date().toISOString();
+
+      const existingIndex = appState.prayers.findIndex(
+        item => item.ref === verse.ref
+      );
+
+      const entry = {
+        ref: verse.ref,
+        text: text,
+        updatedAt: now
+      };
+
+      if (existingIndex >= 0) {
+        appState.prayers[existingIndex] = entry;
+      } else {
+        appState.prayers.unshift(entry);
+      }
+
+      if (saveState()) {
+        result.textContent = "已儲存這節經文的默想紀錄。";
+        result.className = "feedback success";
+        renderHistory();
+      } else {
+        result.textContent =
+          "儲存失敗，可能是瀏覽器儲存空間受到限制。";
+        result.className = "feedback error";
+      }
+    }
+
+    function renderHistory() {
+      const history = document.getElementById("history");
+
+      if (appState.prayers.length === 0) {
+        history.innerHTML =
+          '<p class="empty-state">目前還沒有儲存的默想紀錄。</p>';
+        return;
+      }
+
+      history.replaceChildren();
+
+      appState.prayers.forEach((item, index) => {
+        const container = document.createElement("div");
+        container.className = "history-item";
+
+        const title = document.createElement("strong");
+        title.textContent = item.ref;
+
+        const date = document.createElement("div");
+        date.className = "history-date";
+
+        const parsedDate = new Date(item.updatedAt);
+        date.textContent = Number.isNaN(parsedDate.getTime())
+          ? "儲存日期不詳"
+          : "最後更新：" + parsedDate.toLocaleString("zh-TW");
+
+        const content = document.createElement("p");
+        content.className = "history-text";
+        content.textContent = item.text;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "secondary small-button";
+        deleteButton.type = "button";
+        deleteButton.textContent = "刪除此紀錄";
+
+        deleteButton.addEventListener("click", () => {
+          appState.prayers.splice(index, 1);
+          saveState();
+          renderHistory();
+          loadPrayerForCurrentVerse();
+        });
+
+        container.append(title, date, content, deleteButton);
+        history.appendChild(container);
+      });
+    }
+
+    function clearHistory() {
+      if (appState.prayers.length === 0) {
+        return;
+      }
+
+      const confirmed = window.confirm(
+        "確定要刪除所有默想紀錄嗎？此操作無法復原。"
+      );
+
+      if (!confirmed) {
+        return;
+      }
+
+      appState.prayers = [];
+      saveState();
+      renderHistory();
+      loadPrayerForCurrentVerse();
+
+      document.getElementById("prayerResult").textContent =
+        "已清除全部默想紀錄。";
+    }
+
+    // ==========================================
+    // 7. 綁定按鈕與啟動網站
+    // ==========================================
+
+    document.getElementById("toggleButton")
+      .addEventListener("click", toggleVerse);
+
+    document.getElementById("nextButton")
+      .addEventListener("click", nextVerse);
+
+    document.getElementById("checkButton")
+      .addEventListener("click", checkAnswer);
+
+    document.getElementById("showAnswerButton")
+      .addEventListener("click", showAnswer);
+
+    document.getElementById("savePrayerButton")
+      .addEventListener("click", savePrayer);
+
+    document.getElementById("clearHistoryButton")
+      .addEventListener("click", clearHistory);
+
+    renderVerse();
+    renderProgress();
+    renderHistory();
+    loadPrayerForCurrentVerse();
+  </script>
+</body>
+</html>
